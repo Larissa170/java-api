@@ -21,12 +21,13 @@ public class SecurityConfigurations {
     private SecurityFilter securityFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         // metodo desbloqueia as requisicoes e desabilita a tela de login padrão do spring
         return http.csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers("/login").permitAll();// permite o acesso para essa url
+                    req.requestMatchers("/v3/api-docs/**","/swagger-ui.html","/swagger-ui/**").permitAll(); //liberado para acessar a documentacao
                     req.anyRequest().authenticated();// todas as outras somente com autenticacao
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class) // indica qual filter deve ser executado primeiro
